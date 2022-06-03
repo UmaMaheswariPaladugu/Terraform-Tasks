@@ -1,7 +1,3 @@
-## Terraform
-
-Terraform configuration files
-
 # Terraform
 
 ## DEPLOYING A VM IN AWS USING THE TERRAFORM WORKFLOW
