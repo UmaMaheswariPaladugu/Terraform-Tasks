@@ -55,7 +55,7 @@
 
 16. When prompted, type yes and press Enter.
 
-## Verify that the resource was created as per specification in the AWS Management Console
+## Resource Specifications
 
 We are creating an AWS EC2 instance (virtual machine) named webserver.
 
