@@ -38,6 +38,29 @@
 
      vim main.tf
 
+     The main.tf file spins up AWS networking components such as a virtual private cloud (VPC), security group, internet gateway, route tables, and an EC2 instance bootstrapped with an Apache webserver which is publicly accessible.
+
+     We have selected AWS as our provider and our resources will be deployed in the us-east-1 region.
+     We are using the ssm_parameter public endpoint resource to get the AMI ID of the Amazon Linux 2 image that will spin up the EC2 webserver.
+     We are using the vpc module (provided by the Terraform Public Registry) to create our network components like subnets, internet gateway, and route tables.
+     For the security_group resource, we are using a dynamic block on the ingress attribute to dynamically generate as many ingress blocks as we need. The dynamic block includes the var.rules complex variable configured in the variables.tf file.
+     We are also using a couple of built-in functions and some logical expressions in the code to get it to work the way we want, including the join function for the name attribute in the security group resource, and the fileexists and file functions for the user_data parameter in the EC2 instance resource.
+
+     vim variables.tf
+
+     The variables.tf file contains the complex variable type which we will be iterating over with the dynamic block in the main.tf file.
+
+     vim scripts.sh
+
+     The script.sh file is passed into the EC2 instance using its user_data attribute and the fileexists and file functions (as you saw in the main.tf file), which then installs the Apache webserver and starts up the service.
+
+     vim outputs.tf
+
+     The outputs.tf file returns the values we have requested upon deployment of our Terraform code.
+
+     The Web-Server-URL output is the publicly accessible URL for our webserver. Notice here that we are using the join function for the value parameter to generate the URL for the webserver.
+The Time-Date output is the timestamp when we executed our Terraform code
+
 11. Paste in the following code from the provided GitHub repo)
 
 12. To save and exit the file, press Escape and enter :wq.
@@ -48,17 +71,29 @@
     
      The files in the directory should include main.tf, outputs.tf, script.sh, and variables.tf.
 
-13. Initialize the working directory where the code is located:
+13. As a best practice, format the code in preparation for deployment:
+
+     terraform fmt
+
+14. Initialize the working directory and download the required providers:
 
      terraform init
 
-14. Review the actions performed when you deploy the Terraform code:
-     terraform plan
+15. Validate the code to look for any errors in syntax, parameters, or attributes within 
 
-15. Deploy the code:
+     Terraform resources that may prevent it from deploying correctly:
 
-     terraform apply
+     terraform validate
+16. You should receive a notification that the configuration is valid.
 
-16. When prompted, type yes and press Enter.
+17. Review the actions that will be performed when you deploy the Terraform code:
 
-## Resource Specifications
+      terraform plan
+    
+    Note the Change to Outputs, where you can see the Time-Date and Web-Server-URL outputs that were configured in the outputs.tf file earlier.
+
+18. Deploy the code:
+
+     terraform apply --auto-approve
+
+    Note: The --auto-approve flag will prevent Terraform from prompting you to enter yes explicitly before it deploys the code.
