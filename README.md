@@ -55,7 +55,7 @@
 
      The code is configured with Kubernetes as the provider, allowing Terraform to interact with the Kubernetes API to create and destroy resources. Within the kubernetes_deployment resource, the replicas attribute controls the number of deployments, which in turn controls the number of pods being deployed.
 
-11. Paste in the following code from the provided GitHub repo( TerraformFundamentalsPart2 repository)
+11. Paste in the following code from the provided GitHub repo
 
 12. To save and exit the file, press Escape and enter :wq.
 
