@@ -76,7 +76,7 @@
 
 18. Inside the provisioner block, find the following line of code that outputs the content on a webpage, which currently displays Version 1:
 
-     echo '<h1><center>My Website via Terraform Version 1</center></h1>'
+     echo '<h 1><cen ter>My Website via Terraform Version 1< /center>< /h1>'
      In this line of code, change Version 1 to Version 2.
 
      Press Escape and enter :wq to save and exit the file.
@@ -108,7 +108,7 @@ Deploy the code:
 
 22. Use the curl command to view the contents of the webpage using the IP address provided:
 
-     curl http://<WEBSERVER-PUBLIC-IP>
+     curl http://<webserver-public-IP>
 
      In the output that is returned, verify that it returns My Website via Terraform Version 2, validating that the provisioner was successfully run again and the tainted resource (which contained code for Version 1) was replaced with a new resource (which contained code for Version 2).
 
@@ -117,59 +117,76 @@ Deploy the code:
 ## Use the import Command to Import a Resource
 
 23. Add the VM as a Resource Named aws_instance.webserver2 in Your Code
-View the contents of the resource_ids.txt file:
+     
+     View the contents of the resource_ids.txt file:
 
-cat /home/cloud_user/resource_ids.txt
-Copy the EC2 instance ID that is displayed in the contents of the file.
+     cat /home/cloud_user/resource_ids.txt
+     
+     Copy the EC2 instance ID that is displayed in the contents of the file.
 
-Open the main.tf file to modify it:
+24. Open the main.tf file to modify it:
 
-vim main.tf
-At the bottom of the code, insert a new line and add the associated resource that will be named aws_instance.webserver2 into your main Terraform code:
+     vim main.tf
 
-resource "aws_instance" "webserver2" {
-    ami = data.aws_ssm_parameter.webserver-ami.value
-    instance_type = "t2..micro"
-}
+     At the bottom of the code, insert a new line and add the associated resource that will be named aws_instance.webserver2 into your main Terraform code:
+
+     resource "aws_instance" "webserver2" {
+         
+         ami = data.aws_ssm_parameter.webserver-ami.value
+        
+         instance_type = "t3.micro"
+     }
 Press Escape and enter :wq to save and exit the file.
 
-Import the aws_instance.webserver2 Resource to Your Terraform Configuration
-Use the terraform import command, the name of the resource in your main code, and the EC2 instance ID to tell Terraform which resource to import:
+## Import the aws_instance.webserver2 Resource to Your Terraform Configuration
 
-terraform import aws_instance.webserver2 <COPIED-EC2-INSTANCE-ID>
-View the Terraform state file to verify that the resource has been imported:
+25. Use the terraform import command, the name of the resource in your main code, and the EC2 instance ID to tell Terraform which resource to import:
 
-vim terraform.tfstate
-Search for the keyword /webserver2 and notice that the aws_instance resource with the name webserver2 is listed and has a mode of managed.
+     terraform import aws_instance.webserver2 <COPIED-EC2-INSTANCE-ID>
 
-Press Escape and enter :q! to exit the file.
+26. View the Terraform state file to verify that the resource has been imported:
 
-Modify the aws_instance.webserver2 Resource
-Open the main.tf file to modify it:
+     vim terraform.tfstate
+     
+     Search for the keyword /webserver2 and notice that the aws_instance resource with the name webserver2 is listed and has a mode of managed.
 
-vim main.tf
-At the bottom of the file, replace the existing code for the aws_instance.webserver2 resource with the following:
+     Press Escape and enter :q! to exit the file.
 
-resource "aws_instance" "webserver2" {
-   ami = data.aws_ssm_parameter.webserver-ami.value
-   instance_type = "t3.micro"
-   subnet_id = aws_subnet.subnet.id
- }
-Note: Alternately, you could copy/paste the ami, instance_type, and subnet_id values from the aws_instance.webserver resource in the main.tf file and add it to the existing aws_instance.webserver2 resource in the code.
+27. Modify the aws_instance.webserver2 Resource
 
-As a best practice, format the code before deployment:
+     Open the main.tf file to modify it:
 
-terraform fmt
-Deploy the updated code:
+     vim main.tf
 
-terraform apply
-In the plan that displays before deployment, note that it will add 1 resource and destroy 1 resource, which is in essence the replacement of the old aws_instance.webserver2 with the new aws_instance.webserver2 that is configured with the modified code. You can also scroll up in the plan and verify that aws_instance.webserver2 will be replaced.
+     At the bottom of the file, replace the existing code for the aws_instance.webserver2 resource with the following:
 
-Type yes and press Enter to deploy the code as planned.
+     resource "aws_instance" "webserver2" {
 
-In the output that is returned, verify that 1 resource was added and 1 was destroyed, validating that the old aws_instance.webserver2 resource was replaced with the new aws_instance.webserver2 containing your customized code.
+         ami = data.aws_ssm_parameter.webserver-ami.value
+         
+         instance_type = "t2.micro"
+         
+         subnet_id = aws_subnet.subnet.id
+     }
+    
+    Note: Alternately, you could copy/paste the ami, instance_type, and subnet_id values from the aws_instance.webserver resource in the main.tf file and add it to the existing aws_instance.webserver2 resource in the code.
 
-Tear down the infrastructure you just created before moving on:
+28. As a best practice, format the code before deployment:
 
-terraform destroy
-When prompted, type yes and press Enter.
+     terraform fmt
+
+29. Deploy the updated code:
+
+     terraform apply
+
+     In the plan that displays before deployment, note that it will add 1 resource and destroy 1 resource, which is in essence the replacement of the old aws_instance.webserver2 with the new aws_instance.webserver2 that is configured with the modified code. You can also scroll up in the plan and verify that aws_instance.webserver2 will be replaced.
+
+     Type yes and press Enter to deploy the code as planned.
+
+     In the output that is returned, verify that 1 resource was added and 1 was destroyed, validating that the old aws_instance.webserver2 resource was replaced with the new aws_instance.webserver2 containing your customized code.
+
+30. Tear down the infrastructure you just created before moving on:
+
+     terraform destroy
+
+     When prompted, type yes and press Enter.
