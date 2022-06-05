@@ -97,3 +97,34 @@ The Time-Date output is the timestamp when we executed our Terraform code
      terraform apply --auto-approve
 
     Note: The --auto-approve flag will prevent Terraform from prompting you to enter yes explicitly before it deploys the code.
+
+## Test Out the Deployment and Clean Up
+
+     Once the code has executed successfully, view the outputs at the end of the completion message:
+
+     The Time-Date output displays the timestamp when the code was executed.
+     The Web-Server-URL output displays the web address for the Apache webserver we created during deployment.
+    Note: You could also use the terraform output command at any time in the CLI to view these outputs on demand.
+
+     1. Verify that the resources were created correctly in the AWS Management Console:
+
+     2. Navigate to the AWS Management Console in your browser.
+     3. Type VPC in the search bar and select VPC from the contextual menu.
+     4. On the Resources by Region page, click VPCs.
+     5. Verify that the my-vpc resource appears in the list.
+     6. Type EC2 in the search bar and select EC2 from the contextual menu.
+     7. On the Resources page, click Instances (running).
+     8. Verify that the instance, which has no name, appears in the list (and is likely still initializing).
+     9. In the menu on the left, click Security Groups.
+     10. Verify that the Terraform-Dynamic-SG security group appears in the list.
+     11. Select the security group to see further details.
+     12. Click on the Inbound rules tab, and note that three separate rules were created from the single dynamic block used on the ingress parameter in the code.
+     13. In the CLI, copy the URL displayed as the Web-Server_URL output value.
+
+     14. In a new browser window or tab, paste the URL and press Enter.
+
+     15. Verify that the Apache Test Page loads, validating that the code executed correctly and the logic within the AWS instance in Terraform worked correctly, as it was able to locate the script.sh file in the folder and bootstrap the EC2 instance accordingly.
+
+     16. In the CLI, tear down the infrastructure you just created before moving on:
+
+           terraform destroy --auto-approve
